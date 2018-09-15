@@ -28,10 +28,11 @@ class LSystem {
 }
 
 class TurtleLSystem extends LSystem {
-	constructor(axiom, rules) {
+	constructor(axiom, rules, rotationAmt) {
 		if (!TurtleLSystem.validateInput(axiom, rules))
 			throw new Exception("Turtle L-systems can only operate on the characters 'F', 'f', '+', and '-'.");
 		super(axiom, rules);
+		this.rotationAmt = rotationAmt;
 	}
 
 	static validateInput(axiom, rules) {
@@ -53,7 +54,8 @@ class TurtleLSystem extends LSystem {
 		return true;
 	}
 
-	draw(canvas, initialX, initialY, initialHeading, level, stepSize, rotationSize) {
+	draw(canvas, initialX, initialY, initialHeading, level, stepSize) {
+		// TODO: automatically select initialX, intitialY, initialHeading and stepSize given level
 		const ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -75,9 +77,9 @@ class TurtleLSystem extends LSystem {
 				advance();
 				ctx.moveTo(currX, currY);
 			} else if (instruction === '-') {
-				currHeading -= rotationSize;
+				currHeading -= this.rotationAmt;
 			} else if (instruction === '+') {
-				currHeading += rotationSize;
+				currHeading += this.rotationAmt;
 			} else {
 				throw new Exception('Unrecognized turtle command: ' + instruction);
 			}
@@ -87,5 +89,5 @@ class TurtleLSystem extends LSystem {
 	}
 }
 
-TurtleLSystem.QuadraticKoch = new TurtleLSystem('F-F-F-F', {'F': 'F-F+F+FF-F-F+F'});
+TurtleLSystem.QuadraticKoch = new TurtleLSystem('F-F-F-F', {'F': 'F-F+F+FF-F-F+F'}, Math.PI / 2);
 
