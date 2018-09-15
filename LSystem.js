@@ -4,6 +4,12 @@ class LSystem {
 		this.rules = rules;
 	}
 
+	expand(character) {
+		if (character in this.rules)
+			return this.rules[character];
+		return character;
+	}
+
 	* charsAtLevel(level) {
 		let stack = []
 		stack.push([this.axiom, 0]);
@@ -13,7 +19,7 @@ class LSystem {
 				yield str;
 				continue;
 			}
-			const children = this.rules[str];
+			const children = this.expand(str);
 			for (let i = children.length - 1; i >= 0; --i)
 				stack.push([children[i], depth + 1]);
 		}
