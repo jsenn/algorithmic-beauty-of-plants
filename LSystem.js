@@ -4,7 +4,7 @@ class LSystem {
 		this.rules = rules;
 	}
 
-	expand(character) {
+	replace(character) {
 		if (character in this.rules)
 			return this.rules[character];
 		return character;
@@ -20,7 +20,7 @@ class LSystem {
 				yield str;
 				continue;
 			}
-			const children = this.expand(str);
+			const children = this.replace(str);
 			for (let i = children.length - 1; i >= 0; --i)
 				stack.push([children[i], depth + 1]);
 		}
