@@ -27,3 +27,32 @@ class LSystem {
 	}
 }
 
+class TurtleLSystem extends LSystem {
+	constructor(axiom, rules) {
+		if (!TurtleLSystem.validateInput(axiom, rules))
+			throw new Exception("Turtle L-systems can only operate on the characters 'F', 'f', '+', and '-'.");
+		super(axiom, rules);
+	}
+
+	static validateInput(axiom, rules) {
+		if (!TurtleLSystem.hasValidVocab(axiom))
+			return false;
+		for (let k of Object.keys(rules))
+			if (!TurtleLSystem.hasValidVocab(k) || !TurtleLSystem.hasValidVocab(rules[k]))
+				return false;
+
+		return true;
+	}
+
+	static hasValidVocab(s) {
+		const vocab = new Set(['F', 'f', '+', '-']);
+		for (let c of s)
+			if (!vocab.has(c))
+				return false;
+
+		return true;
+	}
+}
+
+TurtleLSystem.QuadraticKoch = new TurtleLSystem('F-F-F-F', {'F': 'F-F+F+FF-F-F+F'});
+
