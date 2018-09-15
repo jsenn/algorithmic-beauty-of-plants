@@ -12,7 +12,8 @@ class LSystem {
 
 	* charsAtLevel(level) {
 		let stack = []
-		stack.push([this.axiom, 0]);
+		for (let c of this.axiom)
+			stack.push([c, 0]);
 		while (stack.length > 0) {
 			const [str, depth] = stack.pop();
 			if (depth === level) {
