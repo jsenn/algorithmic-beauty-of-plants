@@ -1,4 +1,35 @@
 // Utilities
+function drawTurtle(canvas, commandStream, initialX, initialY, initialHeading, stepSize, rotationAmt) {
+	const ctx = canvas.getContext('2d');
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	let currX = initialX;
+	let currY = initialY;
+	let currHeading = initialHeading;
+	const advance = () => {
+		currX += stepSize * Math.cos(currHeading);
+		currY += stepSize * Math.sin(currHeading);
+	};
+
+	ctx.beginPath();
+	ctx.moveTo(currX, currY);
+	for (let command of commandStream) {
+		if (command === 'F') {
+			advance();
+			ctx.lineTo(currX, currY);
+		} else if (command === 'f') {
+			advance();
+			ctx.moveTo(currX, currY);
+		} else if (command === '-') {
+			currHeading -= rotationAmt;
+		} else if (command === '+') {
+			currHeading += rotationAmt;
+		}
+	}
+
+	ctx.stroke();
+}
+
 function* mapIterable(iter, f) {
 	for (let val of iter)
 		yield f(val);
@@ -62,36 +93,7 @@ class TurtleLSystem extends LSystem {
 
 	draw(canvas, initialX, initialY, initialHeading, level, stepSize) {
 		// TODO: automatically select initialX, intitialY, initialHeading and stepSize given level
-		const ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-		let currX = initialX;
-		let currY = initialY;
-		let currHeading = initialHeading;
-		const advance = () => {
-			currX += stepSize * Math.cos(currHeading);
-			currY += stepSize * Math.sin(currHeading);
-		};
-
-		ctx.beginPath();
-		ctx.moveTo(currX, currY);
-		for (let instruction of this.charsAtLevel(level)) {
-			if (instruction === 'F') {
-				advance();
-				ctx.lineTo(currX, currY);
-			} else if (instruction === 'f') {
-				advance();
-				ctx.moveTo(currX, currY);
-			} else if (instruction === '-') {
-				currHeading -= this.rotationAmt;
-			} else if (instruction === '+') {
-				currHeading += this.rotationAmt;
-			} else {
-				throw new Exception('Unrecognized turtle command: ' + instruction);
-			}
-		}
-
-		ctx.stroke();
+		drawTurtle(canvas, this.charsAtLevel(level), initialX, initialY, initialHeading, stepSize, this.rotationAmt);
 	}
 }
 
