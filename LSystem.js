@@ -1,3 +1,9 @@
+// Utilities
+function* mapIterable(iter, f) {
+	for (let val of iter)
+		yield f(val);
+}
+
 class LSystem {
 	constructor(axiom, rules) {
 		this.axiom = axiom;
